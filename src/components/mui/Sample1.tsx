@@ -1,7 +1,7 @@
-import { BarChart } from '@mui/x-charts';
-import './Sample1.css';
-import { FC, useMemo, useState } from 'react';
-import { axisClasses } from '@mui/x-charts/ChartsAxis';
+import { BarChart } from "@mui/x-charts";
+import "./Sample1.css";
+import { FC, useMemo, useState } from "react";
+import { axisClasses } from "@mui/x-charts/ChartsAxis";
 import {
   RadioGroup,
   FormControl,
@@ -11,128 +11,32 @@ import {
   Stack,
   Typography,
   Box,
-} from '@mui/material';
-
-type DataSelect = 'ringo' | 'mikan' | 'gokei';
-
-type Data = Partial<{
-  itemA: number;
-  itemB: number;
-  itemC: number;
-  itemD: number;
-}> & {
-  month: string;
-};
+} from "@mui/material";
+import { DataSelect, items, type Item } from "../datas/item";
 
 const createDataset = (currentSelect: DataSelect) => {
-  const dataset: Data[] = [
-    {
-      itemA: 59,
-      itemB: 57,
-      itemC: 86,
-      itemD: 21,
-      month: '2023/07',
-    },
-    {
-      itemA: 50,
-      itemB: 52,
-      itemC: 78,
-      itemD: 28,
-      month: '2023/08',
-    },
-    {
-      itemA: 47,
-      itemB: 53,
-      itemC: 106,
-      itemD: 41,
-      month: '2023/09',
-    },
-    {
-      itemA: 54,
-      itemB: 56,
-      itemC: 92,
-      itemD: 73,
-      month: '2023/10',
-    },
-    {
-      itemA: 57,
-      itemB: 69,
-      itemC: 92,
-      itemD: 99,
-      month: '2023/11',
-    },
-    {
-      itemA: 60,
-      itemB: 63,
-      itemC: 103,
-      itemD: 144,
-      month: '2023/12',
-    },
-    {
-      itemA: 59,
-      itemB: 60,
-      itemC: 105,
-      itemD: 319,
-      month: '2024/01',
-    },
-    {
-      itemA: 65,
-      itemB: 60,
-      itemC: 106,
-      itemD: 20,
-      month: '2023/02',
-    },
-    {
-      itemA: 51,
-      itemB: 51,
-      itemC: 95,
-      itemD: 131,
-      month: '2024/03',
-    },
-    {
-      itemA: 60,
-      itemB: 65,
-      itemC: 97,
-      itemD: 55,
-      month: '2024/04',
-    },
-    {
-      itemA: 67,
-      itemB: 64,
-      itemC: 76,
-      itemD: 48,
-      month: '2024/05',
-    },
-    {
-      itemA: 61,
-      itemB: 70,
-      itemC: 103,
-      itemD: 25,
-      month: '2024/06',
-    },
-  ];
-  const customDataset: Data[] = [];
+  const customDataset: Item[] = [];
   switch (currentSelect) {
-    case 'ringo':
+    case "ringo":
       customDataset.push(
-        ...dataset.map((data) => ({
+        ...items.map((data) => ({
           itemA: data.itemA,
           month: data.month,
         }))
       );
       break;
-    case 'mikan':
+    case "mikan":
       customDataset.push(
-        ...dataset.map((data) => ({
+        ...items.map((data) => ({
           itemB: data.itemB,
           itemC: data.itemC,
           month: data.month,
         }))
       );
       break;
-    case 'gokei':
+    case "gokei":
       customDataset.push(
-        ...dataset.map((data) => ({
+        ...items.map((data) => ({
           itemB: data.itemB,
           itemA: data.itemA,
           month: data.month,
@@ -145,38 +49,38 @@ const createDataset = (currentSelect: DataSelect) => {
 
 export const Sample1: FC = () => {
   const [currentDataSelect, setDataCurrentSelect] =
-    useState<DataSelect>('gokei');
+    useState<DataSelect>("gokei");
 
   const series = useMemo(() => {
     const s = [];
     const valueFormatter = (value: number | null) => `${value}`;
 
-    if (currentDataSelect === 'ringo' || currentDataSelect === 'gokei') {
+    if (currentDataSelect === "ringo" || currentDataSelect === "gokei") {
       s.push({
-        dataKey: 'itemA',
-        stack: 'A',
-        label: 'りんごがとれた数',
+        dataKey: "itemA",
+        stack: "A",
+        label: "りんごがとれた数",
         valueFormatter,
-        color: '#62b4f7',
+        color: "#62b4f7",
       });
     }
 
-    if (currentDataSelect === 'mikan' || currentDataSelect === 'gokei') {
+    if (currentDataSelect === "mikan" || currentDataSelect === "gokei") {
       s.push({
-        dataKey: 'itemB',
-        label: 'みかんがとれた数',
-        stack: 'A',
+        dataKey: "itemB",
+        label: "みかんがとれた数",
+        stack: "A",
         valueFormatter,
-        color: '#7fea79',
+        color: "#7fea79",
       });
     }
 
-    if (currentDataSelect === 'mikan') {
+    if (currentDataSelect === "mikan") {
       s.push({
-        dataKey: 'itemC',
-        label: '有田みかんの数',
+        dataKey: "itemC",
+        label: "有田みかんの数",
         valueFormatter,
-        color: '#f8ed69',
+        color: "#f8ed69",
       });
     }
 
@@ -199,8 +103,7 @@ export const Sample1: FC = () => {
             setDataCurrentSelect(
               (event.target as HTMLInputElement).value as DataSelect
             );
-          }}
-        >
+          }}>
           <Stack direction="row">
             <FormControlLabel
               value="mikan"
@@ -221,17 +124,17 @@ export const Sample1: FC = () => {
         <BarChart
           dataset={createDataset(currentDataSelect)}
           axisHighlight={{
-            x: 'band',
+            x: "band",
           }}
           // barLabel={(item: BarItem, _: BarLabelContext) => String(item.value)}
           borderRadius={2}
           xAxis={[
             {
-              scaleType: 'band',
-              dataKey: 'month',
-              tickPlacement: 'start',
-              tickLabelPlacement: 'middle',
-              position: 'top',
+              scaleType: "band",
+              dataKey: "month",
+              tickPlacement: "start",
+              tickLabelPlacement: "middle",
+              position: "top",
               // typeエラーになるが設定はできる
               // categoryGapRatio: 0.1,
               // barGapRatio: 0.1,
@@ -256,13 +159,13 @@ export const Sample1: FC = () => {
           }}
           sx={{
             [`.${axisClasses.left} .${axisClasses.label}`]: {
-              transform: 'translateX(-10px)',
+              transform: "translateX(-10px)",
             },
           }}
           slotProps={{
             legend: {
-              direction: 'row',
-              position: { vertical: 'top', horizontal: 'left' },
+              direction: "row",
+              position: { vertical: "top", horizontal: "left" },
               padding: 0,
               labelStyle: {
                 fontSize: 14,
@@ -270,7 +173,7 @@ export const Sample1: FC = () => {
             },
           }}
           tooltip={{
-            trigger: 'axis',
+            trigger: "axis",
           }}
         />
       </div>
