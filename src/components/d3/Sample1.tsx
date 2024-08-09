@@ -1,5 +1,6 @@
+import { Box, Tooltip } from "@mui/material";
 import * as d3 from "d3";
-import { FC, useEffect, useRef } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 
 type Props = {
   data: { date: Date; value: number }[];
@@ -14,11 +15,20 @@ export const Sample1: FC<Props> = ({
   data,
   width = 640,
   height = 400,
-  marginTop = 60,
+  marginTop = 40,
   marginRight = 40,
   marginBottom = 20,
   marginLeft = 40,
 }) => {
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const [tooltip, setTooltip] = useState<{
+    x: number;
+    y: number;
+    date: Date;
+    value: number;
+    show: boolean;
+  } | null>(null);
+
   const dateExtent = d3.extent(data, (d) => d.date) as [Date, Date];
   // 日付の範囲に余裕を加える
   const startDate = new Date(dateExtent[0].getTime());
@@ -44,7 +54,8 @@ export const Sample1: FC<Props> = ({
   const line = d3
     .line<{ date: Date; value: number }>()
     .x((d) => x(d.date))
-    .y((d) => y(d.value));
+    .y((d) => y(d.value))
+    .curve(d3.curveCatmullRom.alpha(0.5));
   const d = line(data);
   if (d === null) {
     throw new Error("line is null");
@@ -70,18 +81,45 @@ export const Sample1: FC<Props> = ({
     if (yAxisRef.current) {
       d3.select(yAxisRef.current).call(yAxis);
     }
-  }, [xAxis, yAxis]);
+
+    // ツールチップ
+    const svg = d3.select(svgRef.current);
+    svg
+      .selectAll("circle")
+      .data(data)
+      .on("mouseover", (event, d) => {
+        setTooltip({
+          x: event.clientX,
+          y: event.clientY,
+          date: d.date,
+          value: d.value,
+          show: true,
+        });
+      })
+      .on("mouseout", () => {
+        setTooltip(null);
+      });
+  }, [xAxis, yAxis, data, x, y]);
 
   return (
-    <svg width={width} height={height}>
-      <path fill="none" stroke="currentColor" strokeWidth="1.5" d={d} />
-      <g fill="white" stroke="currentColor" strokeWidth="1.5">
-        {data.map((d, i) => (
-          <circle key={i} cx={x(d.date)} cy={y(d.value)} r="2.5" />
-        ))}
-      </g>
-      <g ref={xAxisRef} transform={`translate(0,${height - marginBottom})`} />
-      <g ref={yAxisRef} transform={`translate(${marginLeft},0)`} />
-    </svg>
+    <Box sx={{ position: "relative" }}>
+      <svg width={width} height={height} ref={svgRef}>
+        <path fill="none" stroke="#008899" strokeWidth="1.5" d={d} />
+        <g fill="white" stroke="#008899" strokeWidth="1.5">
+          {data.map((d, i) => (
+            <circle
+              key={i}
+              stroke="#008899"
+              cx={x(d.date)}
+              cy={y(d.value)}
+              r="5"
+            />
+          ))}
+        </g>
+        <g ref={xAxisRef} transform={`translate(0,${height - marginBottom})`} />
+        <g ref={yAxisRef} transform={`translate(${marginLeft},0)`} />
+      </svg>
+      {tooltip && tooltip.show ? "ツールチップあるよ" : "ツールチップないよ"}
+    </Box>
   );
 };

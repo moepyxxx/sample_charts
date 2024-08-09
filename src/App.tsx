@@ -12,7 +12,7 @@ function App() {
       <MuiSample1 />
       <MuiSample2 />
       <MuiSample3 />
-      <RechartsSample1 />
+      {/* <RechartsSample1 /> */}
       <D3Sample1
         data={[
           { date: new Date("2021/01"), value: 15 },
