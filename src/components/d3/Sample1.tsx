@@ -81,17 +81,28 @@ export const Sample1: FC<Props> = ({
       })
     )
     .padding(0);
-
   const xAxis = d3
     .axisBottom(dateX)
-    .ticks(5)
-    .tickFormat((d) => d3.timeFormat("%Y/%m")(d as Date));
-  const yAxis = d3
-    .axisLeft(lineY)
     .ticks(10)
+    .tickFormat((d) => d3.timeFormat("%Y/%m")(d as Date));
+
+  const yAxis = d3
+    .axisLeft(
+      d3
+        .scaleLinear()
+        .domain([
+          Math.min(extent[0], barYExtent[0]),
+          Math.max(extent[1], barYExtent[1]),
+        ])
+        .range([height - marginBottom, marginTop])
+    )
+    .ticks(
+      Math.max(extent[1], barYExtent[1] - Math.min(extent[0], barYExtent[0])) /
+        10
+    )
     .tickSize(5)
     .tickSizeOuter(4)
-    .tickFormat((d) => `${d} s`);
+    .tickFormat((d) => `${d} !`);
 
   const xAxisRef = useRef<SVGGElement | null>(null);
   const yAxisRef = useRef<SVGGElement | null>(null);
