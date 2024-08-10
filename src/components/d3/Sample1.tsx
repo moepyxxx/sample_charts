@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import * as d3 from "d3";
 import { format } from "date-fns";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useRef, useState } from "react";
 import { useMount } from "react-use";
 
 type Props = {
@@ -124,12 +124,16 @@ export const Sample1: FC<Props> = ({
       .join("rect") // 要素を追加
       .attr("x", function (d) {
         const formatted = format(d.date, "yyyy/MM");
-        return backgroundBarX(formatted) + backgroundBarX.bandwidth() * 0.1;
+        const barX = backgroundBarX(formatted);
+        if (barX === undefined) {
+          throw new Error("barX is undefined");
+        }
+        return barX + backgroundBarX.bandwidth() * 0.1;
       })
       .attr("y", function (d) {
         return barY(d.barValue);
       })
-      .attr("width", function (d) {
+      .attr("width", function () {
         return backgroundBarX.bandwidth() * 0.8; // 例として80%の幅を設定
       })
       .attr("height", function (d) {
@@ -169,7 +173,7 @@ export const Sample1: FC<Props> = ({
       })
       .attr("width", backgroundBarX.bandwidth())
       .attr("y", marginTop)
-      .attr("height", function (d) {
+      .attr("height", function () {
         return height - marginTop - marginBottom;
       })
       .style("fill", "none")
