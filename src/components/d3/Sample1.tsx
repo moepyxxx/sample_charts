@@ -179,23 +179,9 @@ export const Sample1: FC<Props> = ({
       });
   });
 
-  console.log("hog");
-
   return (
     <Box sx={{ position: "relative" }}>
       <svg width={width} height={height} ref={svgRef}>
-        {/* <path fill="none" stroke="#008899" strokeWidth="1.5" d={d} />
-        <g fill="white" stroke="#008899" strokeWidth="1.5">
-          {data.map((d, i) => (
-            <circle
-              key={i}
-              stroke="#008899"
-              cx={dateX(d.date)}
-              cy={lineY(d.lineValue)}
-              r="5"
-            />
-          ))}
-        </g> */}
         {/** XAxis */}
         <g ref={xAxisRef} transform={`translate(0,${height - marginBottom})`} />
         {/** YAxis */}
