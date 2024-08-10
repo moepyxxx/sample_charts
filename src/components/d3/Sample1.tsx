@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import * as d3 from "d3";
 import { format } from "date-fns";
 import { FC, useEffect, useRef, useState } from "react";
+import { useMount } from "react-use";
 
 type Props = {
   data: { date: Date; lineValue: number; barValue: number }[];
@@ -95,7 +96,7 @@ export const Sample1: FC<Props> = ({
   const xAxisRef = useRef<SVGGElement | null>(null);
   const yAxisRef = useRef<SVGGElement | null>(null);
 
-  useEffect(() => {
+  useMount(() => {
     if (xAxisRef.current) {
       d3.select(xAxisRef.current).call(xAxis);
     }
@@ -176,19 +177,7 @@ export const Sample1: FC<Props> = ({
         d3.select(this).style("fill", "none");
         setTooltip(null);
       });
-  }, [
-    xAxis,
-    yAxis,
-    data,
-    backgroundBarX,
-    height,
-    marginBottom,
-    marginTop,
-    barY,
-    d,
-    dateX,
-    lineY,
-  ]);
+  });
 
   console.log("hog");
 
