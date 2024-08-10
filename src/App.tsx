@@ -16,13 +16,13 @@ function App() {
       {/* <RechartsSample1 /> */}
       <D3Sample1
         data={[
-          { date: new Date("2021/01"), lineValue: 15 },
-          { date: new Date("2021/02"), lineValue: 22 },
-          { date: new Date("2021/03"), lineValue: 36 },
-          { date: new Date("2021/04"), lineValue: 41 },
-          { date: new Date("2021/05"), lineValue: 59 },
-          { date: new Date("2021/06"), lineValue: 89 },
-          { date: new Date("2021/07"), lineValue: 17 },
+          { date: new Date("2021/01"), lineValue: 15, barValue: 34 },
+          { date: new Date("2021/02"), lineValue: 22, barValue: 52 },
+          { date: new Date("2021/03"), lineValue: 36, barValue: 100 },
+          { date: new Date("2021/04"), lineValue: 41, barValue: 32 },
+          { date: new Date("2021/05"), lineValue: 59, barValue: 1 },
+          { date: new Date("2021/06"), lineValue: 89, barValue: 100 },
+          { date: new Date("2021/07"), lineValue: 17, barValue: 44 },
         ]}
       />
       <D3SelectionSample
