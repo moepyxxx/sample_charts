@@ -1,8 +1,9 @@
 import "./App.css";
 import { Sample2 as MuiSample2 } from "./components/mui/Sample2";
 import { Sample1 as MuiSample1 } from "./components/mui/Sample1";
-import { Sample1 as RechartsSample1 } from "./components/recharts/Sample1";
+// import { Sample1 as RechartsSample1 } from "./components/recharts/Sample1";
 import { Sample1 as D3Sample1 } from "./components/d3/Sample1";
+import { SelectionSample as D3SelectionSample } from "./components/d3/SelectionSample";
 import { Stack } from "@mui/material";
 import { Sample3 as MuiSample3 } from "./components/mui/Sample3";
 
@@ -14,6 +15,17 @@ function App() {
       <MuiSample3 />
       {/* <RechartsSample1 /> */}
       <D3Sample1
+        data={[
+          { date: new Date("2021/01"), lineValue: 15 },
+          { date: new Date("2021/02"), lineValue: 22 },
+          { date: new Date("2021/03"), lineValue: 36 },
+          { date: new Date("2021/04"), lineValue: 41 },
+          { date: new Date("2021/05"), lineValue: 59 },
+          { date: new Date("2021/06"), lineValue: 89 },
+          { date: new Date("2021/07"), lineValue: 17 },
+        ]}
+      />
+      <D3SelectionSample
         data={[
           { date: new Date("2021/01"), value: 15 },
           { date: new Date("2021/02"), value: 22 },
