@@ -43,34 +43,25 @@ export const Sample1: FC<Props> = ({
     .domain([startDate, endDate])
     .range([marginLeft, width - marginRight]);
 
-  const extent = d3.extent(data.map((d) => d.lineValue));
-  if (extent[0] === undefined || extent[1] === undefined) {
-    throw new Error("extent is undefined");
-  }
-  const lineY = d3
+  const combinedExtent = [
+    Math.min(...data.map((d) => d.lineValue), ...data.map((d) => d.barValue)),
+    Math.max(...data.map((d) => d.lineValue), ...data.map((d) => d.barValue)),
+  ];
+  const commonY = d3
     .scaleLinear()
-    .domain([0, d3.max(data, (d) => d.lineValue) as number])
-    .nice()
+    .domain(combinedExtent)
+    .nice() // スケールの端数を整える
     .range([height - marginBottom, marginTop]);
 
   const line = d3
     .line<{ date: Date; lineValue: number }>()
     .x((d) => dateX(d.date))
-    .y((d) => lineY(d.lineValue))
+    .y((d) => commonY(d.lineValue))
     .curve(d3.curveCatmullRom.alpha(0.5));
   const d = line(data);
   if (d === null) {
     throw new Error("line is null");
   }
-
-  const barYExtent = d3.extent(data.map((d) => d.barValue));
-  if (barYExtent[0] === undefined || barYExtent[1] === undefined) {
-    throw new Error("barYExtent is undefined");
-  }
-  const barY = d3
-    .scaleLinear()
-    .domain(barYExtent)
-    .range([height - marginBottom, marginTop]);
 
   const backgroundBarX = d3
     .scaleBand()
@@ -87,19 +78,8 @@ export const Sample1: FC<Props> = ({
     .tickFormat((d) => d3.timeFormat("%Y/%m")(d as Date));
 
   const yAxis = d3
-    .axisLeft(
-      d3
-        .scaleLinear()
-        .domain([
-          Math.min(extent[0], barYExtent[0]),
-          Math.max(extent[1], barYExtent[1]),
-        ])
-        .range([height - marginBottom, marginTop])
-    )
-    .ticks(
-      Math.max(extent[1], barYExtent[1] - Math.min(extent[0], barYExtent[0])) /
-        10
-    )
+    .axisLeft(commonY)
+    .ticks((commonY.domain()[1] - commonY.domain()[0]) / 10)
     .tickSize(5)
     .tickSizeOuter(4)
     .tickFormat((d) => `${d} !`);
@@ -131,13 +111,13 @@ export const Sample1: FC<Props> = ({
         return barX + backgroundBarX.bandwidth() * 0.1;
       })
       .attr("y", function (d) {
-        return barY(d.barValue);
+        return commonY(d.barValue);
       })
       .attr("width", function () {
         return backgroundBarX.bandwidth() * 0.8; // 例として80%の幅を設定
       })
       .attr("height", function (d) {
-        return height - barY(d.barValue) - marginBottom - 1;
+        return height - commonY(d.barValue) - marginBottom - 1;
       })
       .attr("fill", "#f6ad49");
 
@@ -159,7 +139,7 @@ export const Sample1: FC<Props> = ({
       .attr("stroke", "#008899")
       .attr("stroke-width", 1.5)
       .attr("cx", (d) => dateX(d.date))
-      .attr("cy", (d) => lineY(d.lineValue))
+      .attr("cy", (d) => commonY(d.lineValue))
       .attr("r", 5);
 
     // 背景（アクティブ検知）

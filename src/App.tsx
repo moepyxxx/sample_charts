@@ -20,7 +20,7 @@ function App() {
           { date: new Date("2021/02"), lineValue: 22, barValue: 52 },
           { date: new Date("2021/03"), lineValue: 36, barValue: 100 },
           { date: new Date("2021/04"), lineValue: 41, barValue: 32 },
-          { date: new Date("2021/05"), lineValue: 59, barValue: 1 },
+          { date: new Date("2021/05"), lineValue: 59, barValue: 5 },
           { date: new Date("2021/06"), lineValue: 89, barValue: 150 },
           { date: new Date("2021/07"), lineValue: 17, barValue: 44 },
         ]}
