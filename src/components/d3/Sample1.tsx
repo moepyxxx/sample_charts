@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import * as d3 from "d3";
 import { format } from "date-fns";
-import { FC, useRef, useState } from "react";
+import { FC, useMemo, useRef, useState } from "react";
 import { useMount } from "react-use";
 
 type Props = {
@@ -30,6 +30,14 @@ export const Sample1: FC<Props> = ({
     value: number;
     show: boolean;
   } | null>(null);
+
+  const baseColor = useMemo(() => {
+    const color = d3.color("steelblue");
+    if (color === null) {
+      throw new Error("color is null");
+    }
+    return color;
+  }, []);
 
   const dateExtent = d3.extent(data, (d) => d.date) as [Date, Date];
   // 日付の範囲に余裕を加える
@@ -119,14 +127,14 @@ export const Sample1: FC<Props> = ({
       .attr("height", function (d) {
         return height - commonY(d.barValue) - marginBottom - 1;
       })
-      .attr("fill", "#f6ad49");
+      .attr("fill", baseColor.brighter(0.5).formatHex());
 
     // Lineグラフ
     svg
       .append("path")
       .datum(data)
       .attr("fill", "none")
-      .attr("stroke", "#008899")
+      .attr("stroke", baseColor.brighter(1).formatHex())
       .attr("stroke-width", 1.5)
       .attr("d", d);
 
@@ -136,7 +144,7 @@ export const Sample1: FC<Props> = ({
       .data(data)
       .join("circle")
       .attr("fill", "white")
-      .attr("stroke", "#008899")
+      .attr("stroke", baseColor.brighter(1).formatHex())
       .attr("stroke-width", 1.5)
       .attr("cx", (d) => dateX(d.date))
       .attr("cy", (d) => commonY(d.lineValue))
@@ -148,8 +156,11 @@ export const Sample1: FC<Props> = ({
       .data(data)
       .join("rect") // 要素を追加
       .attr("x", function (d) {
-        const formatted = format(d.date, "yyyy/MM");
-        return backgroundBarX(formatted);
+        const barX = backgroundBarX(format(d.date, "yyyy/MM"));
+        if (barX === undefined) {
+          throw new Error("barX is undefined");
+        }
+        return barX;
       })
       .attr("width", backgroundBarX.bandwidth())
       .attr("y", marginTop)
